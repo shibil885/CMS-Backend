@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
 import { Otp, OtpSchema } from '../otp/schema/otp.schema';
+import { JwtTokenGenerator } from 'src/util/jwtTokeGenerator.util';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { Otp, OtpSchema } from '../otp/schema/otp.schema';
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, JwtTokenGenerator],
 })
 export class UserModule {}

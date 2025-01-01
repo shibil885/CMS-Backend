@@ -7,35 +7,24 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
 import { Model } from 'mongoose';
-import { LoginUserDto } from 'src/common/dto/loginUserDto.dto';
-import { RegisterUserDto } from 'src/common/dto/registerUserDto.dto';
+import { LoginUserDto } from 'src/common/dto/loginUser.dto';
+import { RegisterUserDto } from 'src/common/dto/registerUser.dto';
 import * as bcryptjs from 'bcryptjs';
 import { mailsendFn } from 'src/util/mailSender.util';
 import { Otp } from '../otp/schema/otp.schema';
 import { ErrorResponse } from 'src/common/enum/errorResponse.enum';
 import { JwtPayload } from 'src/common/interface/jwrPayload.interface';
-import { JwtService } from '@nestjs/jwt';
+import { JwtTokenGenerator } from 'src/util/jwtTokeGenerator.util';
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private _UserModel: Model<User>,
     @InjectModel(Otp.name) private _OtpModel: Model<Otp>,
-    private _jwtService: JwtService,
+    private _jwtTokenGenerator: JwtTokenGenerator,
   ) {}
 
   private _hashPassword(password: string): Promise<string> {
-    return bcryptjs.hash(password, process.env.SALT_ROUND);
-  }
-
-  private _generateAccessToken(payload: JwtPayload) {
-    return this._jwtService.sign(payload, {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-    });
-  }
-  private _generateRefreshToken(payload: JwtPayload) {
-    return this._jwtService.sign(payload, {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-    });
+    return bcryptjs.hash(password, parseInt(process.env.SALT_ROUND));
   }
 
   async login(userData: LoginUserDto) {
@@ -51,8 +40,9 @@ export class UserService {
       );
       if (isValid) {
         const payload: JwtPayload = { ...isUserExist };
-        const accesToken = this._generateAccessToken(payload);
-        const refreshToken = this._generateRefreshToken(payload);
+        const accesToken = this._jwtTokenGenerator.generateAccessToken(payload);
+        const refreshToken =
+          this._jwtTokenGenerator.generateRefreshToken(payload);
         return {
           user: isUserExist,
           accesToken,

@@ -8,10 +8,10 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
-import { RegisterUserDto } from 'src/common/dto/registerUserDto.dto';
+import { RegisterUserDto } from 'src/common/dto/registerUser.dto';
 import { ApiResponse } from 'src/util/response.util';
 import { successResponse } from 'src/common/enum/successResponse.enum';
-import { LoginUserDto } from 'src/common/dto/loginUserDto.dto';
+import { LoginUserDto } from 'src/common/dto/loginUser.dto';
 import { ErrorResponse } from 'src/common/enum/errorResponse.enum';
 
 @Controller('user')
