@@ -34,7 +34,7 @@ export class UserController {
     }
   }
 
-  @Post('registration')
+  @Post('register')
   async userRegistration(
     @Res() res: Response,
     @Body() userData: RegisterUserDto,
