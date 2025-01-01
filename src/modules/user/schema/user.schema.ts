@@ -5,7 +5,7 @@ import { UserType } from 'src/common/enum/userType.enum';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
-export class User extends Document {
+export class User {
   @Prop({ required: true, unique: true })
   username: string;
 
@@ -16,10 +16,14 @@ export class User extends Document {
   password: string;
 
   @Prop({
-    type: UserType,
+    type: String,
+    enum: UserType,
     default: UserType.USER,
   })
   role: UserType;
+
+  @Prop({ default: false })
+  isVerified: boolean;
 
   @Prop({ default: true })
   isActive: boolean;
