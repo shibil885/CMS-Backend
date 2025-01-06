@@ -25,7 +25,7 @@ export class ApiResponse<T> {
     message: string,
     data?: T,
     code: number = 200,
-    meta?: Record<string, number>,
+    meta?: Record<string, number | string>,
   ): ApiResponse<T> {
     return new ApiResponse(true, code, message, data, meta);
   }

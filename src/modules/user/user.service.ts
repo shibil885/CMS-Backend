@@ -39,7 +39,11 @@ export class UserService {
         isUserExist.password,
       );
       if (isValid) {
-        const payload: JwtPayload = { ...isUserExist };
+        const payload: JwtPayload = {
+          _id: isUserExist._id,
+          email: isUserExist.email,
+          role: isUserExist.role,
+        };
         const accesToken = this._jwtTokenGenerator.generateAccessToken(payload);
         const refreshToken =
           this._jwtTokenGenerator.generateRefreshToken(payload);
@@ -56,33 +60,59 @@ export class UserService {
     }
   }
 
-  async signup(userData: RegisterUserDto) {
+  async signup(userData: RegisterUserDto): Promise<User> {
+    const { email, username, password } = userData;
+    const otp = Math.floor(1000 + Math.random() * 9000);
+
     try {
-      const isUserExist = await this._UserModel.findOne({
-        email: userData.email,
-      });
-      if (isUserExist) throw new ConflictException(ErrorResponse.USER_EXIST);
-      const { email, username, password } = userData;
-      const hashedPassword = await this._hashPassword(password);
-      const newUser = await new this._UserModel({
-        username,
-        email,
-        password: hashedPassword,
-      }).save();
-      if (newUser) {
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        console.log(`Generated OTP for ${newUser.email}:`, otp);
-        await new this._OtpModel({ email: newUser.email, otp: otp }).save();
-        await mailsendFn(
-          newUser.email,
-          'Verification email from "CMS-Project"',
-          otp,
-        );
-        return newUser;
+      const existingUser = await this._UserModel
+        .findOne({ email }, { email: 1 })
+        .lean();
+
+      if (existingUser) {
+        throw new ConflictException(ErrorResponse.USER_EXIST);
       }
-      throw new InternalServerErrorException('Somthing went wrong');
+      const hashedPassword = await this._hashPassword(password);
+
+      const [newUser] = await Promise.all([
+        this._UserModel.create({
+          username,
+          email,
+          password: hashedPassword,
+        }),
+        this._OtpModel.create({
+          email,
+          otp,
+          time: new Date(),
+        }),
+      ]);
+
+      if (!newUser) {
+        throw new InternalServerErrorException('Failed to create user');
+      }
+
+      mailsendFn(email, 'Verification email from "CMS-Project"', otp).catch(
+        (error) => {
+          console.error(
+            `Failed to send verification email to ${email}:`,
+            error,
+          );
+          throw error;
+        },
+      );
+
+      console.log(`Generated OTP for ${email}:`, otp);
+
+      return newUser;
     } catch (error) {
-      throw error;
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      if (error.code === 11000) {
+        throw new ConflictException(ErrorResponse.USER_EXIST);
+      }
+      console.error('Signup error:', error);
+      throw new InternalServerErrorException('Failed to process signup');
     }
   }
 }

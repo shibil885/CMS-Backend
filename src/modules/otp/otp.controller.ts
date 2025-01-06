@@ -24,8 +24,9 @@ export class OtpController {
     if (otpSubmissionResult) {
       const response = ApiResponse.successResponse(
         successResponse.OTP_VALIDATED,
-        otpSubmissionResult,
+        otpSubmissionResult['user'],
         HttpStatus.OK,
+        { acc_T: otpSubmissionResult['accessToken'] },
       );
       return res.json(response);
     } else {

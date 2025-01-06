@@ -22,7 +22,7 @@ export class OtpService {
       const userOtp = await this._OtpModel
         .findOne({
           email: otpData.email,
-          otp: otpData.otp,
+          otp: parseInt(otpData.otp),
         })
         .sort({ time: -1 });
 
@@ -42,6 +42,7 @@ export class OtpService {
         const refreshToken =
           this._JwtTokenGenerator.generateRefreshToken(payload);
         return {
+          user: updatedUser,
           accessToken,
           refreshToken,
         };
@@ -49,6 +50,7 @@ export class OtpService {
         return false;
       }
     } catch (error) {
+      console.log('errrr', error);
       throw error;
     }
   }

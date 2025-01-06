@@ -3,4 +3,7 @@ export enum successResponse {
   USER_SUCCESSFULLY_LOGED = 'User successfully loged',
   OTP_VALIDATED = 'OTP validated',
   RESEND_OTP_SUCCESS = 'New OTP sended to your email',
+  ARTICLE_CREATED = 'New Article created',
+  SINGLE_ARTICLE = 'Single article',
+  ALL_ARTICLES = 'Successfully get all articles',
 }

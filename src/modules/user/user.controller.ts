@@ -21,13 +21,22 @@ export class UserController {
   @Post('login')
   async userLogin(@Res() res: Response, @Body() userData: LoginUserDto) {
     const loginData = await this._UserService.login(userData);
-    if (userData) {
+    if (loginData) {
+      res.cookie('accT', loginData['accesToken'], {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+      res.cookie('refT', loginData['refreshToken'], {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+
       const response = ApiResponse.successResponse(
         successResponse.USER_SUCCESSFULLY_LOGED,
-        loginData,
+        loginData['user'],
         HttpStatus.OK,
+        { acc_T: loginData['accesToken'] },
       );
-      console.log('login res', response);
       return res.json(response);
     } else {
       throw new BadRequestException(ErrorResponse.INVALID_CREDENTIALS);
@@ -46,7 +55,6 @@ export class UserController {
       successResponse.OTP_SEND_MESSAGE,
       signupUserData,
     );
-    console.log('sign up res', response);
     return res.json(response);
   }
 }
