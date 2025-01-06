@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   Res,
   Req,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateArticleDto } from 'src/common/dto/createArticle.dto';
 import { ArticleService } from './article.service';
@@ -18,6 +19,7 @@ import { Request, Response } from 'express';
 import { ApiResponse } from 'src/util/response.util';
 import { successResponse } from 'src/common/enum/successResponse.enum';
 import { Article } from './schema/article.schema';
+import { ErrorResponse } from 'src/common/enum/errorResponse.enum';
 
 @Controller('articles')
 export class ArticleController {
@@ -82,13 +84,21 @@ export class ArticleController {
 
   @Put(':id')
   async update(
+    @Res() res: Response,
     @Param('id') id: string,
     @Body() updateArticleDto: Partial<CreateArticleDto>,
   ) {
-    return {
-      statusCode: HttpStatus.OK,
-      data: await this._articleService.update(id, updateArticleDto),
-    };
+    const result = await this._articleService.update(id, updateArticleDto);
+    if (result) {
+      const response = ApiResponse.successResponse(
+        successResponse.ARTICLE_EDITED,
+        result,
+        HttpStatus.OK,
+      );
+      return res.json(response);
+    } else {
+      throw new InternalServerErrorException(ErrorResponse.SOMTHING_WENT_WRONG);
+    }
   }
 
   @Delete(':id')

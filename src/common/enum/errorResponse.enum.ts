@@ -4,4 +4,5 @@ export enum ErrorResponse {
   INVALID_OTP = 'Invalid otp',
   INVALID_MAIL = 'Invalid mail',
   UNAUTHORIZED = 'Unauthorized user',
+  SOMTHING_WENT_WRONG = 'Somthing went wrong',
 }

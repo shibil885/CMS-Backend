@@ -29,7 +29,6 @@ export class AuthMiddleware implements NestMiddleware {
       const decodedAccessToken =
         await this._jwtService.verifyAsync(accessToken);
       req[UserType.USER] = decodedAccessToken;
-      console.log('invvokked');
       return next();
     } catch (error) {
       console.error('Error occurred while verifying access token:', error);

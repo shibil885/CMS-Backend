@@ -4,6 +4,7 @@ export enum successResponse {
   OTP_VALIDATED = 'OTP validated',
   RESEND_OTP_SUCCESS = 'New OTP sended to your email',
   ARTICLE_CREATED = 'New Article created',
+  ARTICLE_EDITED = 'Article successfully edited',
   SINGLE_ARTICLE = 'Single article',
   ALL_ARTICLES = 'Successfully get all articles',
 }

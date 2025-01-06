@@ -50,7 +50,6 @@ export class OtpService {
         return false;
       }
     } catch (error) {
-      console.log('errrr', error);
       throw error;
     }
   }

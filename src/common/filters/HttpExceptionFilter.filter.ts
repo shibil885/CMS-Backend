@@ -45,12 +45,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = 'Internal Server Error';
     }
 
-    // this.logger.error(
-    //   `HTTP ${status} Error: ${JSON.stringify(message)}`,
-    //   exception.stack,
-    //   `Path: ${request.url} - Method: ${request.method}`,
-    // );
-    console.log('Error --->', exception);
+    this.logger.error(
+      `HTTP ${status} Error: ${JSON.stringify(message)}`,
+      exception.stack,
+      `Path: ${request.url} - Method: ${request.method}`,
+    );
 
     response.status(status).json({
       statusCode: status,
@@ -59,56 +58,4 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message: message,
     });
   }
-
-  // catch(exception: HttpException, host: ArgumentsHost) {
-  //   console.log('ooo', exception);
-  //   const ctx = host.switchToHttp();
-  //   const response = ctx.getResponse<Response>();
-  //   const request = ctx.getRequest<Request>();
-
-  //   const status =
-  //     exception instanceof HttpException
-  //       ? exception.getStatus()
-  //       : HttpStatus.INTERNAL_SERVER_ERROR;
-
-  //   let message: string | object = '';
-
-  //   if (exception instanceof BadRequestException) {
-  //     const errorRespons = exception.getResponse();
-  //     if (errorRespons['message'] && Array.isArray(errorRespons['message'])) {
-  //       message = {
-  //         message: errorRespons['message'][0],
-  //         error: errorRespons['error'],
-  //         statusCode: errorRespons['statusCode'],
-  //       };
-  //     } else {
-  //       message = exception.getResponse();
-  //     }
-  //   } else if (
-  //     exception instanceof HttpException &&
-  //     !(exception instanceof BadRequestException)
-  //   ) {
-  //     message = exception.getResponse();
-  //   } else {
-  //     message = 'Internal Server Error';
-  //   }
-
-  //   this.logger.error(
-  //     `HTTP ${status} Error: ${JSON.stringify(message)}`,
-  //     exception.stack,
-  //     `Path: ${request.url} - Method: ${request.method}`,
-  //   );
-
-  //   // Prevent sending headers if already sent
-  //   // if (response.headersSent) {
-  //   //   return;
-  //   // }
-
-  //   response.status(status).json({
-  //     statusCode: status,
-  //     timestamp: new Date().toISOString(),
-  //     path: request.url,
-  //     message: message,
-  //   });
-  // }
 }

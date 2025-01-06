@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery, Types, isValidObjectId } from 'mongoose';
+import { Model, FilterQuery, Types } from 'mongoose';
 import { Article } from './schema/article.schema';
 import { CreateArticleDto } from 'src/common/dto/createArticle.dto';
 
@@ -31,11 +31,8 @@ export class ArticleService {
   }
 
   async findAll(userId: string, page = 1, limit = 10) {
-    console.log('ff', userId);
     const skip = (page - 1) * limit;
     const parsedUser = new Types.ObjectId(userId);
-    console.log('parsed', isValidObjectId(userId));
-    console.log('parsed', parsedUser);
     const [articles, total] = await Promise.all([
       this._ArticleModel
         .find({ author: parsedUser })
@@ -50,7 +47,6 @@ export class ArticleService {
   }
 
   async findOne(id: string): Promise<Article> {
-    console.log('gggg');
     const article = await this._ArticleModel.findById(id).lean().exec();
     if (!article) {
       throw new NotFoundException('Article not found');
