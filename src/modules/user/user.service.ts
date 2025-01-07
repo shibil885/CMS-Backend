@@ -72,7 +72,7 @@ export class UserService {
       if (existingUser && existingUser.isVerified) {
         throw new ConflictException(ErrorResponse.USER_EXIST);
       } else if (existingUser && !existingUser.isVerified) {
-        await this._OtpModel.create({ email }, { otp, time: new Date() });
+        await this._OtpModel.create({ email }, { otp: otp, time: new Date() });
         mailsendFn(email, 'Verification email from "CMS-Project"', otp).catch(
           (error) => {
             console.error(
