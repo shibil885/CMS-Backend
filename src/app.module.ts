@@ -21,7 +21,7 @@ import { JwtTokenGenerator } from './util/jwtTokeGenerator.util';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(
       process.env.DATABASE_HOST ||
-        ' mongodb+srv://rafacello885:shibil123@cluster0.wpqbu.mongodb.net/CMS-Project',
+        'mongodb+srv://rafacello885:shibil123@cluster0.wpqbu.mongodb.net/CMS-Project',
     ),
     JwtModule.register({ global: true, secret: process.env.JWT_SECRET }),
     UserModule,
