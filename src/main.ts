@@ -5,6 +5,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
+  console.log('Server connecting...', process.env.FRONTEND_URL);
   const logger: Logger = new Logger('NestApplication');
   const app = await NestFactory.create(AppModule);
   app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
