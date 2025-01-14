@@ -22,12 +22,21 @@ export class OtpController {
   async otpSubmission(@Res() res: Response, @Body() otpData: OtpSubmissionDto) {
     const otpSubmissionResult = await this._OtpService.submitOtp(otpData);
     if (otpSubmissionResult) {
+      res.cookie('accT', otpSubmissionResult['accessToken'], {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+      res.cookie('refT', otpSubmissionResult['refreshToken'], {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
       const response = ApiResponse.successResponse(
         successResponse.OTP_VALIDATED,
         otpSubmissionResult['user'],
         HttpStatus.OK,
         { acc_T: otpSubmissionResult['accessToken'] },
       );
+      console.log('res ->', response);
       return res.json(response);
     } else {
       throw new InternalServerErrorException();
