@@ -7,7 +7,7 @@ import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const logger: Logger = new Logger('NestApplication');
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin: 'http://localhost:4200', credentials: true });
+  app.enableCors({ origin: 'https://cms.shibil.site', credentials: true });
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,4 +22,3 @@ async function bootstrap() {
   logger.log('Server connected: http://localhost:3000');
 }
 bootstrap();
-// 'https://cms.shibil.site'
