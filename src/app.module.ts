@@ -22,7 +22,7 @@ import { JwtTokenGenerator } from './util/jwtTokeGenerator.util';
     MongooseModule.forRoot(
       'mongodb+srv://rafacello885:shibil123@cluster0.wpqbu.mongodb.net/CMS-Project',
     ),
-    JwtModule.register({ global: true, secret: process.env.JWT_SECRET }),
+    JwtModule.register({ global: true, secret: 'process.env.JWT_SECRET' }),
     UserModule,
     OtpModule,
     ArticleModule,
