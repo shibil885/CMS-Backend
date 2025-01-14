@@ -7,12 +7,12 @@ export class JwtTokenGenerator {
   constructor(private _jwtService: JwtService) {}
   generateAccessToken(payload: JwtPayload) {
     return this._jwtService.sign(payload, {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+      expiresIn: '1d',
     });
   }
   generateRefreshToken(payload: JwtPayload) {
     return this._jwtService.sign(payload, {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+      expiresIn: '7d',
     });
   }
 }
